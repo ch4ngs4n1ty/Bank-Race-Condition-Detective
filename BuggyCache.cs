@@ -1,4 +1,4 @@
-// YOUR NAME HERE
+// Ethan Chang
 // CSCI 251 - Project 1: Race Condition Detective
 // Bug 3: BuggyCache - Fix the race condition in this file
 
@@ -12,6 +12,9 @@ namespace RaceConditionDetective;
 public class BuggyCache
 {
     private readonly Dictionary<string, int> _cache = new();
+
+    private readonly object _lock = new object(); // Initialize a new lock
+
     private int _computeCount = 0;
 
     /// <summary>
@@ -29,8 +32,15 @@ public class BuggyCache
         // Multiple threads can see the key as missing and all compute it.
         if (!_cache.ContainsKey(key))
         {
-            int value = ExpensiveComputation(key);
-            _cache[key] = value;
+            lock (_lock) // Lock to ensure only one thread computes and updates the cache
+            {
+                // Double-check to avoid redundant computation
+                if (!_cache.ContainsKey(key))
+                {
+                    int value = ExpensiveComputation(key);
+                    _cache[key] = value;
+                }
+            }
         }
 
         return _cache[key];
