@@ -1,4 +1,4 @@
-// YOUR NAME HERE
+// Ethan Chang
 // CSCI 251 - Project 1: Race Condition Detective
 // Bug 2: BuggyCounter - Fix the race condition in this file
 
@@ -15,20 +15,21 @@ public class BuggyCounter
 
     public int Count => _count;
 
+    private readonly object _lock = new object();
+
     public void Increment()
     {
         // BUG: This looks atomic but it's actually read-modify-write!
         // _count++ is equivalent to: temp = _count; temp = temp + 1; _count = temp;
-        _count++;
+
+        Interlocked.Increment(ref _count); // Use Interlocked to ensure atomicity
+
     }
 
     public void IncrementBy(int amount)
     {
         // BUG: Same problem, just more obvious
-        for (int i = 0; i < amount; i++)
-        {
-            _count++;
-        }
+        Interlocked.Add(ref _count, amount); // Use Interlocked to ensure atomicity
     }
 
     public void Reset()

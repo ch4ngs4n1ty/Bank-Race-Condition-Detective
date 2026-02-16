@@ -1,4 +1,4 @@
-// YOUR NAME HERE
+// Ethan Chang
 // CSCI 251 - Project 1: Race Condition Detective
 // Bug 4: BuggyLogger - Fix the race condition(s) in this file
 
@@ -17,6 +17,8 @@ public class BuggyLogger
     private readonly List<string> _flushedMessages = new();
     private bool _isRunning = true;
 
+    private readonly object _lock = new object(); // Lock for synchronizing access to buffer and flushedMessages
+
     /// <summary>
     /// Gets all messages that have been flushed (for testing).
     /// </summary>
@@ -28,7 +30,10 @@ public class BuggyLogger
     public void Log(string message)
     {
         // BUG: Multiple threads appending to StringBuilder without synchronization
-        _buffer.AppendLine($"[{DateTime.Now:HH:mm:ss.fff}] {message}");
+        lock (_lock)
+        {
+            _buffer.AppendLine($"[{DateTime.Now:HH:mm:ss.fff}] {message}");
+        }
     }
 
     /// <summary>
@@ -38,15 +43,21 @@ public class BuggyLogger
     {
         // BUG: Reading and clearing buffer is not atomic
         // Another thread might append between ToString() and Clear()
-        if (_buffer.Length > 0)
+        lock (_lock)
         {
-            string contents = _buffer.ToString();
-            _buffer.Clear();
-
-            // Store flushed content (for testing)
-            if (!string.IsNullOrWhiteSpace(contents))
+            if (_buffer.Length > 0)
             {
-                _flushedMessages.Add(contents);
+                string contents = _buffer.ToString();
+                _buffer.Clear();
+
+        
+                    Console.Write(contents);
+                
+                    // Store flushed content (for testing)
+                    if (!string.IsNullOrWhiteSpace(contents))
+                    {
+                        _flushedMessages.Add(contents);
+                    }
             }
         }
     }

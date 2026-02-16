@@ -35,15 +35,15 @@ public class BuggyQueue<T> where T : class
             throw new InvalidOperationException("Queue is completed");
 
         // BUG: _count update is not synchronized with _queue update
-        _queue.Enqueue(item);
-        _count++;
+        lock (_lock)
+        {
+            _queue.Enqueue(item);
+            _count++;
+            Monitor.Pulse(_lock);
+        }
 
         // BUG: Pulse might be called when no one is waiting
         // and the wakeup is lost
-        lock (_lock)
-        {
-            Monitor.Pulse(_lock);
-        }
     }
 
     /// <summary>
@@ -60,16 +60,22 @@ public class BuggyQueue<T> where T : class
             {
                 Monitor.Wait(_lock);
             }
+
+            if (_count == 0) 
+            {
+                return null;
+            }
+
+                // BUG: This is not protected by the lock!
+            var item = _queue.Dequeue();
+
+            _count--;
+
+            return item;
+            
         }
 
         // BUG: By the time we get here, another thread might have taken the item
-        if (_count == 0)
-            return null;
-
-        // BUG: This is not protected by the lock!
-        var item = _queue.Dequeue();
-        _count--;
-        return item;
     }
 
     /// <summary>
