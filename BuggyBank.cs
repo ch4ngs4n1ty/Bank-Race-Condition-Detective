@@ -20,11 +20,11 @@ public class BuggyBank
 
     public decimal Balance => _balance;
 
-    private readonly object _lock = new object();
+    private readonly object _lock = new object(); // Initialize a new lock
 
     public void Deposit(decimal amount)
     {
-        lock (_lock)
+        lock (_lock) // Outer Lock to protect deposit actions
         {
             
             if (amount <= 0)
@@ -39,28 +39,32 @@ public class BuggyBank
         }
     }
 
-    public bool Withdraw(decimal amount)
-    {
-        if (amount <= 0)
-            throw new ArgumentException("Amount must be positive");
-
-        // BUG: Check-then-act race condition
-        if (_balance >= amount)
+    public bool Withdraw(decimal amount) 
+    {   
+        lock (_lock) // Outer Lock to protect withdraw actions
         {
-            decimal current = _balance;
-            // Simulate some processing time
-            Thread.SpinWait(100);
-            _balance = current - amount;
-            return true;
+            if (amount <= 0)
+                throw new ArgumentException("Amount must be positive");
+
+            // BUG: Check-then-act race condition
+            if (_balance >= amount)
+            {
+                decimal current = _balance;
+                // Simulate some processing time
+                Thread.SpinWait(100);
+                _balance = current - amount;
+                return true;
+            }
+            return false;
         }
-        return false;
     }
 
     public void Transfer(BuggyBank destination, decimal amount)
     {
+
         if (Withdraw(amount))
         {
             destination.Deposit(amount);
-        }
+        }        
     }
 }
