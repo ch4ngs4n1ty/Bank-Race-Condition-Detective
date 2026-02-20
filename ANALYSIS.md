@@ -72,7 +72,7 @@ Using the same lock for both methods ensures that no threads can append to the b
 ## Bug 5: BuggyQueue
 
 ### Race Condition Location
-Lines 37-41 in `Enqueue()`, lines 53-65 in `Dequeue()`, and lines 79-82 in `Complete()` have unsynchronized access to `_queue` and `_count`.
+Lines 37-41 in `Enqueue()` and lines 53-65 in `Dequeue()` have unsynchronized access to `_queue` and `_count`.
 
 ### Shared State Involved
 `_queue` and `_count` are accessed by multiple threads simultaneously.
