@@ -1,4 +1,4 @@
-// YOUR NAME HERE
+// Ethan Chang
 // CSCI 251 - Project 1: Race Condition Detective
 // Bug 5: BuggyQueue - Fix the race condition(s) in this file
 
@@ -61,12 +61,14 @@ public class BuggyQueue<T> where T : class
                 Monitor.Wait(_lock);
             }
 
+            // BUG: This is not protected by the lock!
             if (_count == 0) 
             {
                 return null;
             }
 
-                // BUG: This is not protected by the lock!
+            // BUG: By the time we get here, another thread might have taken the item
+
             var item = _queue.Dequeue();
 
             _count--;
@@ -75,7 +77,6 @@ public class BuggyQueue<T> where T : class
             
         }
 
-        // BUG: By the time we get here, another thread might have taken the item
     }
 
     /// <summary>

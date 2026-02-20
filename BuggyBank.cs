@@ -31,10 +31,10 @@ public class BuggyBank
                 throw new ArgumentException("Amount must be positive");
 
             // BUG: This is not atomic!
-            decimal current = _balance;
+            decimal current = _balance;    // Read current balance
             // Simulate some processing time
-            Thread.SpinWait(100);
-            _balance = current + amount;
+            Thread.SpinWait(100);          // Processing the value
+            _balance = current + amount;  // Write new balance back
             
         }
     }

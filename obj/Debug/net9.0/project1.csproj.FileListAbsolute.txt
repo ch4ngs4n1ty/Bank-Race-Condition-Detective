@@ -7,7 +7,6 @@
 /Users/ch4ngs4n1ty/ch4ngs4n1ty GitHub/Project 1 Starter/obj/Debug/net9.0/project1.AssemblyInfoInputs.cache
 /Users/ch4ngs4n1ty/ch4ngs4n1ty GitHub/Project 1 Starter/obj/Debug/net9.0/project1.AssemblyInfo.cs
 /Users/ch4ngs4n1ty/ch4ngs4n1ty GitHub/Project 1 Starter/obj/Debug/net9.0/project1.csproj.CoreCompileInputs.cache
-/Users/ch4ngs4n1ty/ch4ngs4n1ty GitHub/Project 1 Starter/obj/Debug/net9.0/project1.sourcelink.json
 /Users/ch4ngs4n1ty/ch4ngs4n1ty GitHub/Project 1 Starter/obj/Debug/net9.0/project1.dll
 /Users/ch4ngs4n1ty/ch4ngs4n1ty GitHub/Project 1 Starter/obj/Debug/net9.0/refint/project1.dll
 /Users/ch4ngs4n1ty/ch4ngs4n1ty GitHub/Project 1 Starter/obj/Debug/net9.0/project1.pdb
